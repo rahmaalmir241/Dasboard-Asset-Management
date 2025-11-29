@@ -11,7 +11,7 @@ st.title("Overview - Asset & Kegiatan Safety")
 SHEET_ID = "1R1UYHVGMFNNWaalVO5RQwVJbMPYigr23Pl6R9A4-VrE"
 SHEET_NAME = "2025"  # ganti sesuai nama tab di sheetmu
 
-csv_url = f"https://docs.google.com/spreadsheets/d/{SHEET_ID}/gviz/tq?tqx=out:csv&sheet={TES PRAKTIK ALL BU 2025}"
+csv_url = f"https://docs.google.com/spreadsheets/d/{SHEET_ID}/gviz/tq?tqx=out:csv&sheet={SHEET_NAME}"
 
 @st.cache_data(ttl=60)
 def load_data(url):
