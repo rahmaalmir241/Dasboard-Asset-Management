@@ -1,30 +1,39 @@
-
-# app.py
 import streamlit as st
 import pandas as pd
 
-st.set_page_config(page_title="Dashboard Asset Management", layout="wide")
+st.set_page_config(page_title="Dashboard Safety", page_icon="🛡️", layout="wide")
 
-st.title("Overview - Asset & Kegiatan Safety")
+st.title("🛡️ Safety Activity Dashboard")
+st.write("Data Realtime dari Google Sheets")
 
-# --- CONFIG: ganti dengan ID sheet dan sheet name ---
+# Load data dari Google Sheets
 SHEET_ID = "1R1UYHVGMFNNWaalVO5RQwVJbMPYigr23Pl6R9A4-VrE"
-SHEET_NAME = "2025"  # ganti sesuai nama tab di sheetmu
+GID = "944388157"  # sesuai sheet yang kamu kirim
+url = f"https://docs.google.com/spreadsheets/d/{SHEET_ID}/export?format=csv&gid={GID}"
 
-csv_url = f"https://docs.google.com/spreadsheets/d/{SHEET_ID}/gviz/tq?tqx=out:csv&sheet={SHEET_NAME}"
-
-@st.cache_data(ttl=60)
-def load_data(url):
+@st.cache_data
+def load_data():
     return pd.read_csv(url)
 
-try:
-    df = load_data(csv_url)
-    st.write("Data preview")
-    st.dataframe(df.head(50))
-    # contoh ringkasan
-    if 'BU' in df.columns:
-        st.subheader("Count per BU")
-        st.bar_chart(df['BU'].value_counts())
-except Exception as e:
-    st.error("Gagal load data. Pastikan Google Sheet bisa diakses publik atau gunakan service account.")
-    st.exception(e)
+df = load_data()
+
+# Preview data
+st.subheader("📋 Data Kegiatan")
+st.dataframe(df)
+
+# Summary Section
+st.subheader("📊 Ringkasan")
+col1, col2, col3 = st.columns(3)
+
+col1.metric("Jumlah Kegiatan", len(df))
+if "BU" in df.columns:
+    col2.metric("Jumlah BU", df["BU"].nunique())
+else:
+    col2.metric("Jumlah BU", "-")
+
+if "Departemen" in df.columns:
+    col3.metric("Jumlah Departemen", df["Departemen"].nunique())
+else:
+    col3.metric("Jumlah Departemen", "-")
+
+st.success("Dashboard tersambung ke Google Sheets! 🚀")
